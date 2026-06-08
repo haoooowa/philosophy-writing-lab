@@ -7,8 +7,8 @@ import FallacyReport from './components/FallacyReport'
 import CounterExample from './components/CounterExample'
 import RelatedArgs from './components/RelatedArgs'
 
-// 本地用 localhost，线上用环境变量 VITE_API_BASE
-const BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000'
+// VITE_API_BASE 设置了就用它，没设置就用相对路径（前后端在同一域名下）
+const BASE = import.meta.env.VITE_API_BASE || ''
 
 const TABS = [
   { key: 'papers', label: '📚 主题搜文献', needs: 'topic' },

@@ -1,10 +1,11 @@
-"""哲学论文写作助手 — FastAPI 后端"""
+"""哲学论文写作助手 — FastAPI 后端 + 前端静态文件"""
 import time
 import os
 from collections import defaultdict
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from tools.paper_search import search_papers
@@ -45,6 +46,7 @@ app.add_middleware(
         "http://localhost:5174",
         "http://localhost:3000",
         "https://heartfelt-dragon-6a485f.netlify.app",
+        "https://*.trycloudflare.com",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -161,6 +163,11 @@ async def api_related_arguments(req: ArgumentRequest):
 async def api_related_papers(req: PaperRequest):
     papers = await find_related_papers(req.paper)
     return {"papers": papers, "count": len(papers)}
+
+
+# 挂载前端（必须在 API 路由之后）
+if os.path.exists("static"):
+    app.mount("/", StaticFiles(directory="static", html=True), name="frontend")
 
 
 if __name__ == "__main__":
